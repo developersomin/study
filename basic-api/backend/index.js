@@ -1,7 +1,12 @@
 import express from 'express';
-
+import {checkPhone, getToken, sendTokenToSMS} from "./phone.js";
+import swaggerUi from "swagger-ui-express";
+import {openapiSpecification} from "./swagger/config.js";
 const app = express();
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use(express.json());
+
 
 app.get('/boards', (req, res)=>{
     const result = [
@@ -24,12 +29,16 @@ app.post('/boards', (req, res)=>{
 
 app.post('/tokens/phone',(req,res)=>{
 
+    const myPhone = req.body.phoneNumber;
     // 1. 휴대폰번호 자릿수 맞는지 확인하기(10~11자리)
-    check
+    const isValid = checkPhone(myPhone);
+    if(isValid === false) return;
     // 2. 핸드폰 토큰 6자리 만들기
-
+    const myToken = getToken();
     // 3. 핸드폰번호에 토큰 전송하기
-    const myPhone = req.body.qqq;
+    sendTokenToSMS(myPhone, myToken);
+    res.send("인증완료!!!");
+
 })
 
 app.listen(3000,()=>{
