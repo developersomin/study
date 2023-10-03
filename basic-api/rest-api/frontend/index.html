@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>회원가입 연습</title>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script>
+            function sendNumber(){
+                const phoneNumber = document.getElementById("phoneNumber").value;
+                console.log("나의핸드폰번호: ", phoneNumber);
+
+                axios.post("http://localhost:3000/tokens/phone", {
+                    phoneNumber: phoneNumber
+                }).then((res) => {
+                    console.log(res.data);
+                });
+            }
+
+            function authenticate(){
+                const authenticationNumber = document.getElementById("authenticationNumber").value;
+                axios.post("http://localhost:3000/tokens/authentication", {
+                    authenticationNumber: authenticationNumber
+                }).then((res)=>{
+                    console.log(res.data);
+                    document.getElementById("certification").innerText = res.data;
+                })
+            }
+        </script>
+    </head>
+    <body>
+        휴대폰번호:<input id="phoneNumber" type="text"/>
+        <button onclick="sendNumber()">인증번호 보내기</button>
+        인증번호:<input id="authenticationNumber" type="text"/>
+        <button onclick="authenticate()">인증하기</button>
+        <div id="certification">인증상태</div>
+        <button>회원가입</button>
+    </body>
+</html>

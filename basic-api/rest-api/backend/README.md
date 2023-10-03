@@ -99,3 +99,32 @@ HTML 파일에서는 axios를 이용하려면 <script> 태그를 사용해서 �
 ## CORS 란?
 Cross-Origin Resource Sharing의 약자로 리소스를 요청하는 cross-origin HTTP 요청 방식이다. Origin의 Resource에 공유할 때 안전한지 판단하기 위해 브라우저가 서버와 통신하는 방법이다. 권한을 HTTP Header에 넣어 부여한다. Header에 권한 부여가 없는 경우 요청이 제한된다.
 
+## CORS 문제 해결하기
+CORS 에러를 해결하기 위해 직접 응답 헤더에 Origin을 적어주는 방식도 가능하지만, 조금 더 간편한 cors 미들웨어 라이브러리를 설치하도록 한다. (yarn add cors)
+
+app.use(cors()) 같이 입력해주면 모든 origin에서 들어오는 요청을 허용하게 된다.
+
+추후, 보안과 관련해 특정 origin만을 허용해야 한다면, app.use(cors({origin: })) 과 같이 작성하여 특정 origin만을 허용하도록 설정 할 수 있다.
+
+## 환경변수 분리
+github 같은 공유 저장소에 본인만의 key값이 올라가게되면 도용 위험이 발생하기 때문에 환경변수로 분리하여 관리해주어야 한다.
+
+환경변수 파일을 읽어오기 위해 라이브를 설치해주어야한다. 
+
+yarn add dotenv
+
+index.js 파일로 이동하여 설치된 dotenv를 import 해오는 코드를 추가한다. 
+
+import 'dotenv/config'
+
+process.env 라는 명령어를 사용하여 변수를 선언하게 되면 해당 명령어가 .env의 파일의 키값을 찾아 읽어준다.
+
+## 인증 번호 전송 API 만들어보기
+외부 API Coolsms 을 활용하여 문자로 인증하는 API를 만들어 보겠다.
+
+yarn add coolsms-node-sdk 설치를 해준다.
+https://console.coolsms.co.kr/sdk
+https://www.npmjs.com/package/coolsms-node-sdk
+
+공식문서를 통해 coolsms 연동하는 코드를 작성해 보자.
+
