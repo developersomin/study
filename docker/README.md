@@ -53,3 +53,75 @@ docker exec -it 컨테이너_아이디 /bin/bash 명령어를 입력하면, 화�
 docker run -p 8000:3000 이미지_아이디 명령어를 입력한다.
 
 호스트 포트 8000을 컨테이너 포트 3000에 연결하여 포트 포워딩 적용한다.
+
+
+## MongoDB 특징
+MongoDB는 문서지향 저장소를 제공하는 NoSQL 데이터베이스 시스템이다. 
+
+데이터를 Document 로 불리며, 이 데이터의 집합을 collection 이라고 한다. (이것을 RDB에서는 테이블이라고 한다.)
+
+스키마 제약 없이 자유롭고, Binary JSON 형태로 각 문서가 저장되며 배열이나 날짜 등 기존 RDMS에서 지원하지 않던 형태로도 저장할 수 있기 때문에 관계를 연결하는 조인이 필요 없이 한 문서에 좀 더 이해하기 쉬운 형태 그대로 정보를 저장 할 수 있다는 것이 특징이다.
+
+## 터미널에서 mongoDB 연결
+
+상태 확인: sudo systemctl status mongodb
+구동: sudo systemctl start mongodb
+정지: sudo systemctl stop mongodb
+MongoDB 접속: mongosh
+
+## Docker-compose
+복수 개의 컨테이너를 실행시키는 도커 애플리케이션을 통합적으로 만들고 각각의 컨테이너를 시작 및 중지하는 작업을 더 쉽게 수행할 수 있도록 도와주는 도구이다. 
+
+YAML 파일로 여러개의 도커 내부 속성을 설정하고 YAML 파일을 실행시켜 마치 도커를 일괄적으로 한번에 실행시키는 것과 같다.
+
+## Docker-compose를 활용한 MongoDB 연결
+
+Dockerfile 을 작성하여 백엔드 서버 연결을 위한 하나의 가상 컴퓨터를 만들었다. 이번에는 Dockerfile.mongo 파일을 만들어 데이터베이스 연결을 위한 하나의 가상 컴퓨터를 만들어 보자.  (Dockerfile.mongo 파일에 FROM mongo:5 작성)
+
+그 후 Express와 MongoDB의 서버를 한번에 실행시키기 위해 YAML 파일을 정의해주어야 한다. docker-compose.yaml 파일을 생성하여 코드를 작성해보자
+
+```yaml
+version: '3.7'
+
+#컴퓨터들
+services:
+  #컴퓨터이름
+  my-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+  #컴퓨터이름
+  my-database:
+    build:
+      context: .
+      dockerfile: Dockerfile.mongo
+    ports:
+      - 27017:27017
+```
+
+ 터미널에서 __docker-compose build__ 입력하여 image를 build 하고 __docker-compose up__ 을 입력하여 컨테이너를 실행시켜준다.
+ 
+
+```yaml
+  my-database:
+    image: mongo:5
+    ports:
+      - 27017:27017
+```
+ Dockerfile.mongo 파일로 빌드 했던 것을 image 로 변경할 수 있다. 
+ 
+## Docker-compose의 volumes
+로컬 파일을 변경하여도 docker 내의 파일이 변경되지 않는다. 이 문제를 Volumes로 해결할 수 있다.
+내컴퓨터와 도커 컴퓨터의 저장 공간을 공유해주는 것이 Volumes이다.
+```yaml
+  my-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./index.js:/myfolder/index.js
+    ports:
+      - 4000:4000
+```
