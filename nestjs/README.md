@@ -62,7 +62,7 @@ NestJS 공식 홈페이지 깃허브 샘플코드를 보고 구조를 확인해�
 
 그리고 우리는 이제 graphql를 쓰기 때문에 controller 대신 resolver을 사용하면 된다.
 ```javascript
-yarn add @nestjs/graphql @nestjs/apollo graphql apollo-server-express
+yarn add @nestjs/graphql @nestjs/apollo graphql apollo-server-express @apollo/server
 ```
 https://docs.nestjs.com/graphql/quick-start
 
