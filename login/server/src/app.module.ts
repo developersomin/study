@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './api/user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import {GraphQLModule} from "@nestjs/graphql";
-import {ApolloDriver, ApolloDriverConfig} from '@nestjs/apollo';
-import {TypeOrmModule} from "@nestjs/typeorm";
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from './api/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     UserModule,
     ConfigModule.forRoot(),
     GraphQLModule.forRoot<ApolloDriverConfig>({
@@ -20,7 +22,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_DATABASE,
-      entities: [__dirname + '/apis/**/*.entity.*'],
+      entities: [__dirname + '/api/**/*.entity.*'],
       synchronize: true,
       logging: true,
     }),
